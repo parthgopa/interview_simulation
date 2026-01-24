@@ -102,3 +102,40 @@
     margin: 0 auto;
   }
 }
+
+/* Image Carousel Styling */
+.image-carousel-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  border-radius: 10px;
+  margin-top: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.carousel-image.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.carousel-image.hidden {
+  opacity: 0;
+  z-index: 0;
+}
+
+@media (max-width: 576px) {
+  .image-carousel-container {
+    height: 300px;
+  }
+}

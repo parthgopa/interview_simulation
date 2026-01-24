@@ -10,6 +10,7 @@ import {
   HiOutlineBuildingOffice,
   HiOutlineClipboardDocumentList 
 } from "react-icons/hi2";
+import { backendURL } from "../../pages/Home";
 
 export default function AdminOverview() {
   const [stats, setStats] = useState({
@@ -28,7 +29,7 @@ export default function AdminOverview() {
   const fetchStats = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/admin/stats", {
+      const res = await fetch(`${backendURL}/admin/stats`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

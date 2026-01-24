@@ -4,6 +4,7 @@ import Card from "../../ui/Card";
 import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import "../../components/organization-dashboard/pages/OrgSettings.css";
+import { backendURL } from "../../pages/Home";
 
 export default function AdminSettings() {
   const [adminData, setAdminData] = useState({
@@ -19,7 +20,7 @@ export default function AdminSettings() {
   const fetchAdminData = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/admin/me", {
+      const res = await fetch(`${backendURL}/admin/me`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

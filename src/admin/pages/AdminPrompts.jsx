@@ -4,6 +4,7 @@ import Card from "../../ui/Card";
 import Button from "../../ui/Button";
 import "./AdminPrompts.css";
 import { HiPencil, HiCheck, HiXMark } from "react-icons/hi2";
+import { backendURL } from "../../pages/Home";
 
 export default function PromptsManager() {
   const [prompts, setPrompts] = useState([]);
@@ -11,7 +12,7 @@ export default function PromptsManager() {
   const [editForm, setEditForm] = useState({ prompt_text: "", description: "" });
 
   const fetchPrompts = () => {
-    fetch("${backendURL}/prompts-api/prompts")
+    fetch(`${backendURL}/prompts-api/prompts`)
       .then(res => res.json())
       .then(setPrompts)
       .catch(err => console.error("Error fetching prompts:", err));
@@ -29,7 +30,7 @@ export default function PromptsManager() {
 
   const handleSave = async (promptId) => {
     try {
-      const response = await fetch("${backendURL}/prompts-api/admin/prompts", {
+      const response = await fetch(`${backendURL}/prompts-api/admin/prompts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -4,6 +4,7 @@ import { getToken } from "../../../services/token";
 import { FaCopy, FaEdit, FaTrash, FaEye, FaCheckCircle, FaClock, FaCalendarAlt, FaUser, FaBriefcase, FaChartLine } from "react-icons/fa";
 import "./OrgInterviews.css";
 import Card from "../../../ui/Card";
+import { backendURL } from "../../../pages/Home";
 
 export default function OrgInterviews() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function OrgInterviews() {
   const fetchInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/interviews", {
+      const res = await fetch(`${backendURL}/organization/interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

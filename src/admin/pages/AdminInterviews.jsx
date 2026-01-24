@@ -3,6 +3,7 @@ import { getToken } from "../../services/token";
 import Card from "../../ui/Card";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
 import "../../components/organization-dashboard/pages/OrgInterviews.css";
+import { backendURL } from "../../pages/Home";
 
 export default function AdminInterviews() {
   const [interviews, setInterviews] = useState([]);
@@ -15,7 +16,7 @@ export default function AdminInterviews() {
   const fetchInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/admin/interviews", {
+      const res = await fetch(`${backendURL}/admin/interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

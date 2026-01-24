@@ -5,6 +5,7 @@ import Section from "../../ui/Section";
 import Card from "../../ui/Card";
 import Button from "../../ui/Button";
 import { HiCheckCircle } from "react-icons/hi2";
+import { backendURL } from "../../pages/Home";
 
 export default function Pricing() {
     const [plans, setPlans] = useState([]);
@@ -12,7 +13,7 @@ export default function Pricing() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch("${backendURL}/pricing-api/pricing")
+        fetch(`${backendURL}/pricing-api/pricing`)
             .then(res => res.json())
             .then(data => {
                 setPlans(data);

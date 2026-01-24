@@ -3,6 +3,7 @@ import { getToken } from "../../../services/token";
 import { HiOutlineClipboardDocumentList, HiOutlineBriefcase, HiOutlineCalendar, HiOutlineStar } from "react-icons/hi2";
 import Card from "../../../ui/Card";
 import "./Interviews.css";
+import { backendURL } from "../../../pages/Home";
 
 export default function Interviews() {
   const [interviews, setInterviews] = useState([]);
@@ -16,7 +17,7 @@ export default function Interviews() {
   const fetchInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/interview/my-interviews", {
+      const res = await fetch(`${backendURL}/interview/my-interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

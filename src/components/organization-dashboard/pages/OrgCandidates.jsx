@@ -6,6 +6,7 @@ import { HiOutlineUsers } from "react-icons/hi2";
 import Input from "../../../ui/Input";
 import Card from "../../../ui/Card";
 import "./OrgCandidates.css";
+import { backendURL } from "../../../pages/Home";
 
 export default function OrgCandidates() {
   const [candidates, setCandidates] = useState([]);
@@ -22,7 +23,7 @@ export default function OrgCandidates() {
   const fetchCandidates = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/candidates-list", {
+      const res = await fetch(`${backendURL}/organization/candidates-list`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -46,7 +47,7 @@ export default function OrgCandidates() {
 
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/add-candidate", {
+      const res = await fetch(`${backendURL}/organization/add-candidate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

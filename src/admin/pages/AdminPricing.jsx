@@ -5,6 +5,7 @@ import Input from "../../ui/Input";
 import Button from "../../ui/Button";
 import "./AdminPricing.css";
 import { HiPencil, HiTrash, HiPlus } from "react-icons/hi2";
+import { backendURL } from "../../pages/Home";
 
 export default function PricingManager() {
   const [plans, setPlans] = useState([]);
@@ -12,7 +13,7 @@ export default function PricingManager() {
   const [form, setForm] = useState({ name: "", price: "", description: "", features: "", variant: "primary", isPopular: false });
 
   const fetchPlans = () => {
-    fetch("${backendURL}/pricing-api/pricing").then(res => res.json()).then(setPlans);
+    fetch(`${backendURL}/pricing-api/pricing`).then(res => res.json()).then(setPlans);
   };
 
   useEffect(() => fetchPlans(), []);
@@ -22,7 +23,7 @@ export default function PricingManager() {
     const payload = { ...form, features: typeof form.features === 'string' ? form.features.split(',').map(f => f.trim()) : form.features };
     if (editingPlan) payload._id = editingPlan._id;
 
-    await fetch("${backendURL}/pricing-api/admin/pricing", {
+    await fetch(`${backendURL}/pricing-api/admin/pricing`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

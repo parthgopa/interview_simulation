@@ -2,10 +2,11 @@ import { useState, useEffect } from "react";
 import { getToken } from "../../../services/token";
 import { useNavigate } from "react-router-dom";
 import "./ScheduleInterview.css";
-import { HiOutlineClipboard ,HiOutlineSparkles ,HiOutlinePencilSquare, HiOutlineDocumentText, HiOutlineCloudArrowUp, HiOutlineCalendarDays, HiOutlineClock } from "react-icons/hi2";
+import { HiOutlineClipboard ,HiOutlineSparkles,HiOutlineUserPlus  ,HiOutlinePencilSquare, HiOutlineDocumentText, HiOutlineCloudArrowUp, HiOutlineCalendarDays, HiOutlineClock } from "react-icons/hi2";
 import Input from "../../../ui/Input";
 import Card from "../../../ui/Card";
 import Button from "../../../ui/Button";
+import { backendURL } from "../../../pages/Home";
 
 export default function ScheduleInterview() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function ScheduleInterview() {
   const fetchCandidates = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/candidates-list", {
+      const res = await fetch(`${backendURL}/organization/candidates-list`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -136,7 +137,7 @@ export default function ScheduleInterview() {
         notes: manualForm.notes
       };
 
-      const res = await fetch("${backendURL}/organization/schedule-interview", {
+      const res = await fetch(`${backendURL}/organization/schedule-interview`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +199,7 @@ export default function ScheduleInterview() {
       formData.append("duration", resumeForm.duration);
       formData.append("notes", resumeForm.notes);
 
-      const res = await fetch("${backendURL}/organization/schedule-interview-resume", {
+      const res = await fetch(`${backendURL}/organization/schedule-interview-resume`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`

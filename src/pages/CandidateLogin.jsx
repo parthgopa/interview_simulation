@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import { saveToken } from "../services/token";
 import { FaArrowLeft } from "react-icons/fa";
 import "./auth/Login.css"; // Reusing the refined Login styles
+import { backendURL } from "./Home";
 
 export default function CandidateLogin() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function CandidateLogin() {
     setError("");
 
     try {
-      const res = await fetch("${backendURL}/auth/candidate-login", {
+      const res = await fetch(`${backendURL}/auth/candidate-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)

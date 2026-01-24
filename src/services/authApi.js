@@ -1,7 +1,8 @@
-const BASE_URL = "${backendURL}";
+
+import { backendURL } from "../pages/Home";
 
 export async function signupUser(payload) {
-  const res = await fetch(`${BASE_URL}/auth/signup`, {
+  const res = await fetch(`${backendURL}/auth/signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -11,7 +12,7 @@ export async function signupUser(payload) {
 }
 
 export async function loginUser(payload) {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
+  const res = await fetch(`${backendURL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -21,7 +22,7 @@ export async function loginUser(payload) {
 }
 
 export async function getCurrentUser(token) {
-  const res = await fetch(`${BASE_URL}/auth/me`, {
+  const res = await fetch(`${backendURL}/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -31,7 +32,7 @@ export async function getCurrentUser(token) {
 }
 
 export async function loginCandidate(payload) {
-  const res = await fetch(`${BASE_URL}/auth/candidate-login`, {
+  const res = await fetch(`${backendURL}/auth/candidate-login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -46,7 +47,7 @@ export async function loginCandidate(payload) {
 
 // Admin Login
 export async function loginAdmin(payload) {
-  const res = await fetch(`${BASE_URL}/auth/admin-login`, {
+  const res = await fetch(`${backendURL}/auth/admin-login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
@@ -59,7 +60,7 @@ export async function loginAdmin(payload) {
 // Admin Signup
 //-----------------------------
 export async function signupAdmin(payload) {
-  const res = await fetch(`${BASE_URL}/auth/admin-signup`, {
+  const res = await fetch(`${backendURL}/auth/admin-signup`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),

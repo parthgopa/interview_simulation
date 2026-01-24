@@ -31,6 +31,7 @@ import PricingManager from "./admin/pages/AdminPricing";
 import AdminLogin from "./admin/AdminLogin";
 import AdminSignup from "./admin/AdminSignup";
 import AdminDashboard from "./admin/AdminDashboard";
+import ContactUs from "./pages/ContactUs";
 
 function LayoutWrapper() {
   return (
@@ -56,6 +57,7 @@ function App() {
           <Route path="/pm" element={<PricingManager />} />
           <Route path="/admin" element={<AdminLogin />} />
           <Route path="/admin/signup" element={<AdminSignup />} />
+          <Route path="/contact" element={<ContactUs />} />
         </Route>
 
         <Route path="/interview" element={<ProtectedRoute><CandidateInterview /></ProtectedRoute>} />

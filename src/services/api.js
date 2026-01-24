@@ -1,7 +1,6 @@
 import { getToken } from "./token";
 
-const BASE_URL = "${backendURL}";
-
+import { backendURL } from "../pages/Home";
 function authHeaders() {
   return {
     "Content-Type": "application/json",
@@ -10,7 +9,7 @@ function authHeaders() {
 }
 
 // export async function startInterview(payload) {
-//   const res = await fetch(`${BASE_URL}/start-interview`, {
+//   const res = await fetch(`${backendURL}/start-interview`, {
 //     method: "POST",
 //     headers: authHeaders(),
 //     body: JSON.stringify(payload),
@@ -19,7 +18,7 @@ function authHeaders() {
 // }
 
 // export async function sendAnswer(payload) {
-//   const res = await fetch(`${BASE_URL}/next-question`, {
+//   const res = await fetch(`${backendURL}/next-question`, {
 //     method: "POST",
 //     headers: authHeaders(),
 //     body: JSON.stringify(payload),
@@ -28,7 +27,7 @@ function authHeaders() {
 // }
 
 // export async function endInterview(payload) {
-//   const res = await fetch(`${BASE_URL}/end-interview`, {
+//   const res = await fetch(`${backendURL}/end-interview`, {
 //     method: "POST",
 //     headers: authHeaders(),
 //     body: JSON.stringify(payload),
@@ -42,7 +41,7 @@ export async function startInterview(payload) {
     throw new Error("Not authenticated. Please login first.");
   }
 
-  const res = await fetch(`${BASE_URL}/interview/start-interview`, {
+  const res = await fetch(`${backendURL}/interview/start-interview`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -65,7 +64,7 @@ export async function sendAnswer(payload) {
     throw new Error("Not authenticated. Please login first.");
   }
 
-  const res = await fetch(`${BASE_URL}/interview/next-question`, {
+  const res = await fetch(`${backendURL}/interview/next-question`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -88,7 +87,7 @@ export async function endInterview(payload) {
     throw new Error("Not authenticated. Please login first.");
   }
 
-  const res = await fetch(`${BASE_URL}/interview/end-interview`, {
+  const res = await fetch(`${backendURL}/interview/end-interview`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -107,7 +106,7 @@ export async function endInterview(payload) {
 
 // Mock Interview API functions
 export async function createMockInterview(payload) {
-  const res = await fetch(`${BASE_URL}/mock-interview/create`, {
+  const res = await fetch(`${backendURL}/mock-interview/create`, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -124,7 +123,7 @@ export async function listMockInterviews() {
     throw new Error("Not authenticated. Please login first.");
   }
 
-  const res = await fetch(`${BASE_URL}/mock-interview/list`, {
+  const res = await fetch(`${backendURL}/mock-interview/list`, {
     method: "GET",
     headers: authHeaders(),
   });
@@ -140,7 +139,7 @@ export async function listMockInterviews() {
 }
 
 export async function updateMockInterview(mockId, payload) {
-  const res = await fetch(`${BASE_URL}/mock-interview/update/${mockId}`, {
+  const res = await fetch(`${backendURL}/mock-interview/update/${mockId}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify(payload),
@@ -152,7 +151,7 @@ export async function updateMockInterview(mockId, payload) {
 }
 
 export async function deleteMockInterview(mockId) {
-  const res = await fetch(`${BASE_URL}/mock-interview/delete/${mockId}`, {
+  const res = await fetch(`${backendURL}/mock-interview/delete/${mockId}`, {
     method: "DELETE",
     headers: authHeaders(),
   });
@@ -163,7 +162,7 @@ export async function deleteMockInterview(mockId) {
 }
 
 export async function getMockInterview(mockId) {
-  const res = await fetch(`${BASE_URL}/mock-interview/get/${mockId}`, {
+  const res = await fetch(`${backendURL}/mock-interview/get/${mockId}`, {
     method: "GET",
     headers: authHeaders(),
   });

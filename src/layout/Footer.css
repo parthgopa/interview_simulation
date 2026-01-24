@@ -1,17 +1,16 @@
 .footer-section {
-  background-color: var(--bg-secondary);
+  background-color: var(--text-primary);
   padding: var(--space-2xl) 0 0 0;
-  color: var(--text-secondary);
+  color: var(--text-inverse);
   border-top: 1px solid var(--border-light);
 }
 
 /* Brand Column */
 .footer-logo-img {
-  height: 40px;
+  height: 60px;
   width: auto;
   object-fit: contain;
-  filter: grayscale(100%); /* Optional: makes logo monochrome in footer for subtle look */
-  opacity: 0.8;
+  opacity: 1;
   transition: var(--transition-base);
 }
 
@@ -32,7 +31,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  color: var(--text-secondary);
+  color: var(--text-inverse);
   text-decoration: none;
   margin-bottom: var(--space-sm);
   font-size: 0.95rem;
@@ -45,13 +44,13 @@
 
 .contact-icon {
   font-size: 1.2rem;
-  color: var(--text-muted);
+  color: var(--text-inverse);
 }
 
 /* Headings & Link Lists */
 .footer-heading {
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--text-inverse);
   margin-bottom: var(--space-lg);
   font-size: 1.1rem;
 }
@@ -67,7 +66,7 @@
 }
 
 .footer-links a {
-  color: var(--text-secondary);
+  color: var(--text-inverse);
   text-decoration: none;
   font-size: 0.95rem;
   transition: var(--transition-fast);

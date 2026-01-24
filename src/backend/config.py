@@ -13,7 +13,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 client = MongoClient(MONGO_URI)
 print(MONGO_URI)
 print("MongoDB connection successful")
-db = client["interview"]
+db = client["ai_interview"]
 # print(db)
 users_collection = db["users"]
 interviews_collection = db["interviews"]

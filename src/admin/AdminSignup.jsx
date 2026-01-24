@@ -4,6 +4,7 @@ import AuthCard from "../components/auth/AuthCard";
 import Input from "../ui/Input";
 import Button from "../ui/Button";
 import "../pages/auth/Login.css";
+import { backendURL } from "../pages/Home";
 
 export default function AdminSignup() {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export default function AdminSignup() {
     setError("");
 
     try {
-      const res = await fetch("${backendURL}/admin/signup", {
+      const res = await fetch(`${backendURL}/admin/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -1,7 +1,9 @@
 import "./Hero.css";
 import Button from "../../ui/Button";
+import { useNavigate } from "react-router-dom";
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <section className="hero-section">
       <div className="container">
@@ -9,7 +11,7 @@ export default function Hero() {
           <div className="col-lg-10 text-center">
             
             <div className="hero-badge fade-in">
-              <span className="badge-custom">Next-Gen Interview Prep</span>
+              <span className="badge-custom">Next-Gen Interview AI</span>
             </div>
 
             <h1 className="hero-title">
@@ -23,17 +25,17 @@ export default function Hero() {
             </p>
 
             <div className="hero-actions d-flex flex-column flex-sm-row justify-content-center gap-3">
-              <Button className="btn-brand-primary">Start Free Interview</Button>
-              <Button variant="secondary" className="btn-brand-outline">
+              <Button className="btn-brand-primary" onClick={() => navigate("/signup")}>Get Started</Button>
+              <Button variant="secondary" className="btn-brand-outline" onClick={() => navigate("/features")}>
                 View All Features
               </Button>
             </div>
 
-            <div className="hero-trust-text mt-4">
+            {/* <div className="hero-trust-text mt-4">
               <span>Trusted by 10k+ candidates</span>
               <span className="dot-separator">•</span>
               <span>Free to get started</span>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

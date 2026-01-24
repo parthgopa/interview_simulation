@@ -53,13 +53,13 @@ export default function Signup() {
           subtitle="Choose how you want to use the platform"
         >
           <div className="role-selection-grid">
-            <button className="role-tile" onClick={() => setSelectedRole("candidate")}>
+            {/* <button className="role-tile" onClick={() => setSelectedRole("candidate")}>
               <div className="role-tile-icon"><FaUser /></div>
               <div className="role-tile-content">
                 <h4>Candidate</h4>
                 <p>Improve your interview skills with AI</p>
               </div>
-            </button>
+            </button> */}
 
             <button className="role-tile" onClick={() => setSelectedRole("organization")}>
               <div className="role-tile-icon"><FaBuilding /></div>

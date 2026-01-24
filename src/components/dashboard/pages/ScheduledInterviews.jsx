@@ -6,6 +6,7 @@ import { HiOutlineSparkles ,HiOutlineCalendarDays, HiOutlineChartBar, HiOutlineC
 import "./ScheduledInterviews.css";
 import Card from "../../../ui/Card";
 import { HiOutlineClipboardDocumentList } from "react-icons/hi2";
+import { backendURL } from "../../../pages/Home";
 
 export default function ScheduledInterviews() {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ export default function ScheduledInterviews() {
   const fetchScheduledInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/candidate/scheduled-interviews", {
+      const res = await fetch(`${backendURL}/candidate/scheduled-interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

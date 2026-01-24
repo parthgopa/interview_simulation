@@ -4,6 +4,7 @@ import Input from "../../../ui/Input";
 import Button from "../../../ui/Button";
 import Card from "../../../ui/Card";
 import "./OrgOverview.css";
+import { backendURL } from "../../../pages/Home";
 
 export default function OrgSettings() {
   const [form, setForm] = useState({
@@ -19,7 +20,7 @@ export default function OrgSettings() {
   const fetchProfile = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/auth/me", {
+      const res = await fetch(`${backendURL}/auth/me`, {
         headers: { "Authorization": `Bearer ${token}` }
       });
       if (res.ok) {

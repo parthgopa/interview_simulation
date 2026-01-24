@@ -5,6 +5,7 @@ import Button from "../../../ui/Button";
 import Card from "../../../ui/Card";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../../services/token";
+import { backendURL } from "../../../pages/Home";
 
 export default function Overview() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ export default function Overview() {
   const fetchScheduledInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/candidate/all-interviews", {
+      const res = await fetch(`${backendURL}/candidate/all-interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -77,7 +78,7 @@ export default function Overview() {
   const fetchResults = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/candidate/interview-results", {
+      const res = await fetch(`${backendURL}/candidate/interview-results`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

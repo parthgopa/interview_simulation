@@ -11,6 +11,7 @@ import {
   HiOutlineClipboardDocumentList
 } from "react-icons/hi2";
 import { getToken } from "../../../services/token";
+import { backendURL } from "../../../pages/Home";
 
 export default function OrgOverview() {
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ export default function OrgOverview() {
   const fetchInterviews = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/interviews", {
+      const res = await fetch(`${backendURL}/organization/interviews`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
@@ -62,7 +63,7 @@ export default function OrgOverview() {
   const fetchCandidates = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/organization/candidates-list", {
+      const res = await fetch(`${backendURL}/organization/candidates-list`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

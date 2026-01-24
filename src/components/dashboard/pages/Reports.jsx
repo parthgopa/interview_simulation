@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getToken } from "../../../services/token";
 import { FaCheckCircle, FaExclamationTriangle, FaChartBar, FaComments, FaCode, FaTrophy } from "react-icons/fa";
 import "./Reports.css";
+import { backendURL } from "../../../pages/Home";
 
 export default function Reports() {
   const [results, setResults] = useState([]);
@@ -15,7 +16,7 @@ export default function Reports() {
   const fetchResults = async () => {
     try {
       const token = getToken();
-      const res = await fetch("${backendURL}/candidate/interview-results", {
+      const res = await fetch(`${backendURL}/candidate/interview-results`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }

@@ -6,6 +6,7 @@ import Button from "../ui/Button";
 import { saveToken } from "../services/token";
 import "../pages/auth/Login.css";
 import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+import { backendURL } from "../pages/Home";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ export default function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("${backendURL}/admin/login", {
+      const res = await fetch(`${backendURL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
