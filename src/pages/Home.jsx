@@ -5,7 +5,7 @@ import UseCases from "../components/home/UseCases";
 import CTA from "../components/home/CTA";
 import FAQ from "../components/home/FAQ";
 
-export const backendURL = 'http://localhost:5000'
+export const backendURL = 'http://72.62.79.188:5000'
 
 export default function Home() {
   return (
