@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Navbar, Container, Nav, Button, Offcanvas, Accordion } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink,Link, useNavigate } from 'react-router-dom';
 import '../styles/Header.css';
 import '../styles/Chatbot.css';
 import { ThemeContext } from './ThemeContext';
@@ -111,7 +111,7 @@ const Header = () => {
           </Offcanvas.Header>
           <Offcanvas.Body>
             <Nav className="align-items-lg-center ms-lg-auto">
-              <Nav.Link as={Link} to="/" className="nav-link" onClick={() => setShowMenu(false)}> 
+              <Nav.Link as={NavLink} to="/" className="nav-link" onClick={() => setShowMenu(false)}> 
                 <IoHomeOutline size={20} className='navbar-buttons'/> Home
               </Nav.Link>
               
@@ -201,10 +201,10 @@ const Header = () => {
                 </Accordion>
               </div> */}
 
-              <Nav.Link as={Link} to="/about" className="nav-link" onClick={() => setShowMenu(false)}> 
+              <Nav.Link as={NavLink} to="/about" className="nav-link" onClick={() => setShowMenu(false)}> 
                 <IoInformationCircleOutline size={20} className='navbar-buttons'/> About
               </Nav.Link>
-              <Nav.Link as={Link} to="/contact" className="nav-link" onClick={() => setShowMenu(false)}> 
+              <Nav.Link as={NavLink} to="/contact" className="nav-link" onClick={() => setShowMenu(false)}> 
                 <IoCallOutline size={20} className='navbar-buttons'/> Contact Us
               </Nav.Link>
               {/* <Button

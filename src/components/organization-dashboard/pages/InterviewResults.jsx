@@ -4,6 +4,7 @@ import { getToken } from "../../../services/token";
 import { FaArrowLeft, FaCheckCircle, FaExclamationTriangle, FaChartBar, FaComments, FaCode, FaShare } from "react-icons/fa";
 import "./InterviewResults.css";
 import Card from "../../../ui/Card";
+import { backendURL } from "../../../pages/Home";
 
 export default function InterviewResults() {
   const { interviewId } = useParams();

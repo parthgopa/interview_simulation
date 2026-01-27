@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from config import users_collection, candidate_credentials_collection, scheduled_interviews_collection
+from config import organizations_collection, candidate_credentials_collection, scheduled_interviews_collection
 from models.user_model import (
     create_user,
     find_user_by_email,
@@ -9,6 +9,7 @@ from models.user_model import (
 )
 from bson import ObjectId
 from werkzeug.security import check_password_hash
+import uuid
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -17,7 +18,7 @@ auth_bp = Blueprint("auth", __name__)
 def get_me():
     user_id = get_jwt_identity()
     print(user_id)
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
 
     if not user:
         return jsonify({"error": "User not found"}), 404
@@ -61,11 +62,11 @@ def signup():
         if not data.get("name"):
             return jsonify({"error": "Name is required"}), 400
 
-    existing_user = find_user_by_email_and_role(users_collection, email, role)
+    existing_user = find_user_by_email_and_role(organizations_collection, email, role)
     if existing_user:
         return jsonify({"error": f"Email already registered as {role}"}), 409
 
-    create_user(users_collection, data)
+    create_user(organizations_collection, data)
 
     return jsonify({"message": "User created successfully"}), 201
 
@@ -80,12 +81,21 @@ def login():
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400
 
-    user = find_user_by_email_and_role(users_collection, email, role)
+    user = find_user_by_email_and_role(organizations_collection, email, role)
 
     if not user or not verify_password(password, user["password"]):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    token = create_access_token(identity=str(user["_id"]))
+    user_id = str(user["_id"])
+    nonce = str(uuid.uuid4())
+    print(f"\n[LOGIN] User logging in: {user.get('email')} (ID: {user_id})")
+    
+    token = create_access_token(
+        identity=user_id,
+        additional_claims={"nonce": nonce}
+    )
+    print(f"[LOGIN] Generated token (first 50 chars): {token[:50]}...")
+    print(f"[LOGIN] Token contains user_id: {user_id}\n")
 
     user_data = {
         "id": str(user["_id"]),
@@ -118,7 +128,10 @@ def candidate_login():
     if not credential or not check_password_hash(credential["password"], password):
         return jsonify({"error": "Invalid credentials"}), 401
     
-    token = create_access_token(identity=str(credential["_id"]))
+    token = create_access_token(
+        identity=str(credential["_id"]),
+        additional_claims={"nonce": str(uuid.uuid4())}
+    )
     
     return jsonify({
         "token": token,

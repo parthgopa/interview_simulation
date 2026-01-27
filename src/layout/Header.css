@@ -35,7 +35,7 @@
 }
 
 .nav-link-custom.active {
-
+  color: #ffffff !important;
   background-color: var(--accent-primary);
 }
 

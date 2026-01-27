@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from config import users_collection, candidate_credentials_collection, scheduled_interviews_collection, interview_results_collection
+from config import organizations_collection, candidate_credentials_collection, scheduled_interviews_collection, interview_results_collection
 from bson import ObjectId
 from datetime import datetime, timedelta
 import os
@@ -33,7 +33,7 @@ def generate_username(name, email):
 @jwt_required()
 def schedule_interview():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -65,13 +65,13 @@ def schedule_interview():
             "password": generate_password_hash(password),
             "plainPassword": password,
             "createdAt": datetime.now(),
-            "organizationId": user["_id"]
+            "organizationId": user_id
         }
         credential_result = candidate_credentials_collection.insert_one(credential_doc)
         credential_id = str(credential_result.inserted_id)
     
     scheduled_interview = {
-        "organizationId": str(user["_id"]),
+        "organizationId": user_id,
         "organizationName": user.get("organizationName"),
         "candidateName": candidate_name,
         "candidateEmail": candidate_email,
@@ -99,7 +99,7 @@ def schedule_interview():
     result = scheduled_interviews_collection.insert_one(scheduled_interview)
     
     interviews_collection.insert_one({
-        "organizationId": str(user["_id"]),
+        "organizationId":   user_id,
         "candidateName": candidate_name,
         "candidateEmail": candidate_email,
         "position": data["position"],
@@ -148,7 +148,7 @@ def schedule_interview():
 @jwt_required()
 def schedule_interview_resume():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -199,7 +199,7 @@ def schedule_interview_resume():
         credential_id = str(credential_result.inserted_id)
     
     scheduled_interview = {
-        "organizationId": str(user["_id"]),
+        "organizationId": user_id,
         "organizationName": user.get("organizationName"),
         "candidateName": candidate_name,
         "candidateEmail": candidate_email,
@@ -224,7 +224,7 @@ def schedule_interview_resume():
     result = scheduled_interviews_collection.insert_one(scheduled_interview)
     
     interviews_collection.insert_one({
-        "organizationId": str(user["_id"]),
+        "organizationId": user_id,
         "candidateName": candidate_name,
         "candidateEmail": candidate_email,
         "position": data.get("position"),
@@ -247,12 +247,11 @@ def schedule_interview_resume():
 @jwt_required()
 def get_interviews():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
-    
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
 
-    scheduled_interviews = list(scheduled_interviews_collection.find({}))
+    scheduled_interviews = list(scheduled_interviews_collection.find({ "organizationId": user_id }))
     
     interviews_with_credentials = []
     for interview in scheduled_interviews:
@@ -285,11 +284,61 @@ def get_interviews():
     
     return jsonify({"interviews": interviews_with_credentials}), 200
 
+@organization_bp.route("/interviews/<interview_id>", methods=["PUT"])
+@jwt_required()
+def update_interview(interview_id):
+    user_id = get_jwt_identity()
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if not user or user.get("role") != "organization":
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    data = request.json
+    
+    try:
+        # Build update document
+        update_fields = {
+            "candidateName": data.get("candidateName"),
+            "candidateEmail": data.get("candidateEmail"),
+            "position": data.get("position"),
+            "interviewType": data.get("interviewType"),
+            "duration": data.get("duration"),
+            "notes": data.get("notes", ""),
+            "schedulingType": data.get("schedulingType")
+        }
+        
+        # Handle scheduling type specific fields
+        if data.get("schedulingType") == "specific":
+            if data.get("specificDate") and data.get("specificTime"):
+                update_fields["scheduledDate"] = f"{data['specificDate']} {data['specificTime']}"
+            update_fields["daysTimer"] = None
+            if "deadline" in scheduled_interviews_collection.find_one({"_id": ObjectId(interview_id)}) or {}:
+                update_fields["deadline"] = None
+        elif data.get("schedulingType") == "timer":
+            if data.get("daysTimer"):
+                update_fields["daysTimer"] = int(data["daysTimer"])
+                update_fields["deadline"] = datetime.now() + timedelta(days=int(data["daysTimer"]))
+            update_fields["scheduledDate"] = None
+        
+        # Update the interview
+        result = scheduled_interviews_collection.update_one(
+            {"_id": ObjectId(interview_id)},
+            {"$set": update_fields}
+        )
+        
+        if result.modified_count > 0 or result.matched_count > 0:
+            return jsonify({"message": "Interview updated successfully"}), 200
+        else:
+            return jsonify({"error": "Interview not found"}), 404
+    except Exception as e:
+        print(f"Error updating interview: {e}")
+        return jsonify({"error": str(e)}), 500
+
 @organization_bp.route("/interviews/<interview_id>", methods=["DELETE"])
 @jwt_required()
 def delete_interview(interview_id):
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -309,7 +358,7 @@ def delete_interview(interview_id):
 @jwt_required()
 def get_candidates():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -317,7 +366,7 @@ def get_candidates():
     from config import db
     interviews_collection = db["interviews"]
     
-    interviews = list(interviews_collection.find({"organizationId": str(user["_id"])}))
+    interviews = list(interviews_collection.find({"organizationId": user_id}))
     
     candidates_dict = {}
     for interview in interviews:
@@ -341,7 +390,7 @@ def get_candidates():
 @jwt_required()
 def update_profile():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -356,7 +405,7 @@ def update_profile():
             update_fields[field] = data[field]
     
     if update_fields:
-        users_collection.update_one(
+        organizations_collection.update_one(
             {"_id": ObjectId(user_id)},
             {"$set": update_fields}
         )
@@ -367,13 +416,13 @@ def update_profile():
 @jwt_required()
 def get_candidates_list():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
     
-    candidates = list(candidate_credentials_collection.find({}))
-    
+    candidates = list(candidate_credentials_collection.find({"organizationId": user_id }))
+    print(candidates)
     candidates_list = []
     for candidate in candidates:
         candidates_list.append({
@@ -388,7 +437,7 @@ def get_candidates_list():
 @jwt_required()
 def add_candidate():
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -434,7 +483,7 @@ def add_candidate():
 @jwt_required()
 def get_interview_results(interview_id):
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403
@@ -473,7 +522,7 @@ def get_interview_results(interview_id):
 @jwt_required()
 def publish_interview_results(interview_id):
     user_id = get_jwt_identity()
-    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
     
     if not user or user.get("role") != "organization":
         return jsonify({"error": "Unauthorized"}), 403

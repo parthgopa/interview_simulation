@@ -5,7 +5,7 @@ import Input from "../ui/Input";
 import Button from "../ui/Button";
 import { saveToken } from "../services/token";
 import "../pages/auth/Login.css";
-import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
+// import { HiOutlineBuildingOffice2 } from "react-icons/hi2";
 import { backendURL } from "../pages/Home";
 
 export default function AdminLogin() {

@@ -60,11 +60,11 @@ export default function Header() {
                 Dashboard
               </NavLink>
             </li>
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <NavLink to="/contact" className="nav-link-custom fw-medium px-3 py-2 rounded-3 text-dark">
                 Contact Us
               </NavLink>
-            </li>
+            </li> */}
           </ul>
 
           {/* Actions */}

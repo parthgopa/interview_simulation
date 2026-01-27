@@ -26,13 +26,13 @@ export default function Login() {
     }
 
     saveToken(res.token);
-    localStorage.setItem("userRole", res.user.role);
+    sessionStorage.setItem("userRole", res.user.role);
     
     if (res.user.role === "organization") {
-      localStorage.setItem("organizationName", res.user.organizationName || "Organization");
+      sessionStorage.setItem("organizationName", res.user.organizationName || "Organization");
       navigate("/organization/dashboard");
     } else {
-      localStorage.setItem("userName", res.user.name || "Student");
+      sessionStorage.setItem("userName", res.user.name || "Student");
       navigate("/dashboard");
     }
   };

@@ -4,7 +4,7 @@ import { HiOutlineChartBar, HiOutlineCalendarDays, HiOutlineMicrophone, HiOutlin
 
 export default function Sidebar() {
   
-  const candidateData = JSON.parse(localStorage.getItem("candidateData") || "{}");
+  const candidateData = JSON.parse(sessionStorage.getItem("candidateData") || "{}");
   const candidateName = candidateData.name || "Candidate";
 
   return (

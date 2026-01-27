@@ -35,8 +35,27 @@ export default function OrgSettings() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
-    // ... API logic remains same ...
-    setSaving(false);
+
+    try {
+      const token = getToken();
+      const res = await fetch(`${backendURL}/organization/update-profile`, {
+        method: "PUT",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(form)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data)
+        setMessage({ type: "success", text: "Profile updated successfully" });
+      }
+    } catch (error) { 
+      console.error(error); 
+      setMessage({ type: "error", text: "Failed to update profile" });
+    } 
+    finally { setSaving(false); }
   };
 
   if (loading) return (

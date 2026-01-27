@@ -22,7 +22,7 @@ CORS(app, resources={
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"]
     }
-})
+},supports_credentials=True)
 
 jwt = JWTManager(app)
 
@@ -44,4 +44,4 @@ app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(prompts_bp, url_prefix="/prompts-api")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5003)

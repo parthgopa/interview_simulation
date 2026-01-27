@@ -40,7 +40,7 @@ export default function Pricing() {
     );
 
     return (
-        <Section title="Simple, Transparent Pricing" subtitle="Select a plan to supercharge your prep." className="pricing-section">
+        <Section title="Simple, Transparent Pricing" className="pricing-section">
             <div className="row g-4 align-items-center mt-4">
                 {plans.map((plan) => (
                     <div className="col-lg-4 col-md-6" key={plan._id}>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getToken } from "../../../services/token";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./ScheduleInterview.css";
 import { HiOutlineClipboard ,HiOutlineSparkles,HiOutlineUserPlus  ,HiOutlinePencilSquare, HiOutlineDocumentText, HiOutlineCloudArrowUp, HiOutlineCalendarDays, HiOutlineClock } from "react-icons/hi2";
 import Input from "../../../ui/Input";
@@ -10,11 +10,14 @@ import { backendURL } from "../../../pages/Home";
 
 export default function ScheduleInterview() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const editInterview = location.state?.editInterview;
   const [scheduleType, setScheduleType] = useState("manual");
   const [candidates, setCandidates] = useState([]);
   const [loadingCandidates, setLoadingCandidates] = useState(true);
   const [credentials, setCredentials] = useState(null);
   const [showCredentials, setShowCredentials] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [manualForm, setManualForm] = useState({
     candidateName: "",
     candidateEmail: "",
@@ -44,7 +47,36 @@ export default function ScheduleInterview() {
 
   useEffect(() => {
     fetchCandidates();
-  }, []);
+    
+    // Pre-populate form if editing
+    if (editInterview) {
+      setIsEditMode(true);
+      
+      // Parse scheduled date if it exists
+      let parsedDate = "";
+      let parsedTime = "";
+      if (editInterview.scheduledDate) {
+        const dateTimeParts = editInterview.scheduledDate.split(" ");
+        if (dateTimeParts.length === 2) {
+          parsedDate = dateTimeParts[0];
+          parsedTime = dateTimeParts[1];
+        }
+      }
+      
+      setManualForm({
+        candidateName: editInterview.candidateName || "",
+        candidateEmail: editInterview.candidateEmail || "",
+        position: editInterview.position || "",
+        schedulingType: editInterview.daysTimer ? "timer" : "specific",
+        specificDate: parsedDate,
+        specificTime: parsedTime,
+        daysTimer: editInterview.daysTimer ? String(editInterview.daysTimer) : "",
+        interviewType: editInterview.interviewType || "technical",
+        duration: editInterview.duration ? String(editInterview.duration) : "30",
+        notes: editInterview.notes || ""
+      });
+    }
+  }, [editInterview]);
 
   const fetchCandidates = async () => {
     try {
@@ -137,21 +169,39 @@ export default function ScheduleInterview() {
         notes: manualForm.notes
       };
 
-      const res = await fetch(`${backendURL}/organization/schedule-interview`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      let res;
+      if (isEditMode && editInterview?._id) {
+        // Update existing interview
+        res = await fetch(`${backendURL}/organization/interviews/${editInterview._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+      } else {
+        // Create new interview
+        res = await fetch(`${backendURL}/organization/schedule-interview`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+      }
 
       const data = await res.json();
 
       if (res.ok) {
-        setMessage({ type: "success", text: "Interview scheduled successfully!" });
-        setCredentials(data.credentials);
-        setShowCredentials(true);
+        setMessage({ type: "success", text: isEditMode ? "Interview updated successfully!" : "Interview scheduled successfully!" });
+        
+        if (!isEditMode) {
+          setCredentials(data.credentials);
+          setShowCredentials(true);
+        }
+        
         setManualForm({
           candidateName: "",
           candidateEmail: "",
@@ -164,9 +214,17 @@ export default function ScheduleInterview() {
           duration: "30",
           notes: ""
         });
+        setIsEditMode(false);
         fetchCandidates();
+        
+        // Navigate back to interviews page after edit
+        if (isEditMode) {
+          setTimeout(() => {
+            navigate("/organization/dashboard/interviews");
+          }, 1500);
+        }
       } else {
-        setMessage({ type: "error", text: data.error || "Failed to schedule interview" });
+        setMessage({ type: "error", text: data.error || `Failed to ${isEditMode ? 'update' : 'schedule'} interview` });
       }
     } catch (error) {
       setMessage({ type: "error", text: "Network error. Please try again." });
@@ -240,8 +298,8 @@ export default function ScheduleInterview() {
       {/* Page Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h2 className="dashboard-title mb-1">Schedule New Session</h2>
-          <p className="text-muted small">Invite candidates to an AI-powered evaluation</p>
+          <h2 className="dashboard-title mb-1">{isEditMode ? "Edit Interview Session" : "Schedule New Session"}</h2>
+          <p className="text-muted small">{isEditMode ? "Update interview details and configuration" : "Invite candidates to an AI-powered evaluation"}</p>
         </div>
         {candidates.length === 0 && !loadingCandidates && (
           <Button variant="secondary" onClick={() => navigate("/organization/dashboard/candidates")}>
@@ -577,8 +635,18 @@ export default function ScheduleInterview() {
           </div>
 
           <div className="mt-5 border-top pt-4 text-end">
+            {isEditMode && (
+              <Button 
+                type="button" 
+                variant="secondary" 
+                onClick={() => navigate("/organization/dashboard/interviews")}
+                className="px-4 py-3 me-2"
+              >
+                Cancel
+              </Button>
+            )}
             <Button type="submit" disabled={loading} className="px-5 py-3 shadow-sm">
-              {loading ? "Scheduling Session..." : "Confirm & Send Invitation"}
+              {loading ? (isEditMode ? "Updating..." : "Scheduling Session...") : (isEditMode ? "Update Interview" : "Confirm & Send Invitation")}
             </Button>
           </div>
         </form>

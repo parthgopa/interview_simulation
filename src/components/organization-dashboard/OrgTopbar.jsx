@@ -5,7 +5,7 @@ import { HiOutlineBell, HiOutlineUserCircle } from "react-icons/hi2";
 
 export default function OrgTopbar() {
   const navigate = useNavigate();
-  const organizationName = localStorage.getItem("organizationName") || "Organization";
+  const organizationName = sessionStorage.getItem("organizationName") || "Organization";
   
   // Format current date: e.g., "Tuesday, Jan 20"
   const today = new Date().toLocaleDateString('en-US', { 
@@ -16,8 +16,8 @@ export default function OrgTopbar() {
 
   const handleLogout = () => {
     removeToken();
-    localStorage.removeItem("userRole");
-    localStorage.removeItem("organizationName");
+    sessionStorage.removeItem("userRole");
+    sessionStorage.removeItem("organizationName");
     navigate("/login");
   };
 

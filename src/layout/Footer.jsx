@@ -57,6 +57,9 @@ export default function Footer() {
             <h5 className="footer-heading">Services</h5>
             <ul className="footer-links">
               <li><Link to="/">ERP Software Company</Link></li>
+              <li><Link to="/">AI Integration & Deployment </Link></li>
+              <li><Link to="/">AI Strategy & Consulting </Link></li>
+              <li><Link to="/">AI Agents </Link></li>              
               <li><Link to="/">Custom software development company</Link></li>
               <li><Link to="/">Mobile App Development</Link></li>
               <li><Link to="/">IT Consulting</Link></li>

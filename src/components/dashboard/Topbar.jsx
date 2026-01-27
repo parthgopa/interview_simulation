@@ -4,7 +4,7 @@ import "./Topbar.css";
 
 export default function Topbar() {
   const navigate = useNavigate();
-  const userData = JSON.parse(localStorage.getItem("candidateData") || "{}");
+  const userData = JSON.parse(sessionStorage.getItem("candidateData") || "{}");
   const candidateName = userData.name || "Candidate";
 
   // Dynamic date for 2026 context

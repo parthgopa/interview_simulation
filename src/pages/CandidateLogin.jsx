@@ -30,8 +30,8 @@ export default function CandidateLogin() {
 
       if (res.ok) {
         saveToken(data.token);
-        localStorage.setItem("userRole", "scheduled_candidate");
-        localStorage.setItem("candidateData", JSON.stringify(data.candidate));
+        sessionStorage.setItem("userRole", "scheduled_candidate");
+        sessionStorage.setItem("candidateData", JSON.stringify(data.candidate));
         navigate("/dashboard");
       } else {
         setError(data.error || "Invalid credentials provided.");

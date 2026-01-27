@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from config import users_collection, candidate_credentials_collection, scheduled_interviews_collection
+from config import organizations_collection, candidate_credentials_collection, scheduled_interviews_collection
 from werkzeug.security import generate_password_hash, check_password_hash
 from bson import ObjectId
 from datetime import datetime
@@ -98,7 +98,7 @@ def get_all_organizations():
     if not admin:
         return jsonify({"error": "Unauthorized"}), 403
     
-    organizations = list(users_collection.find({"role": "organization"}))
+    organizations = list(organizations_collection.find({"role": "organization"}))
     
     org_list = []
     for org in organizations:
@@ -154,7 +154,7 @@ def get_all_candidates():
         org_name = "Unknown"
         
         if org_id:
-            org = users_collection.find_one({"_id": ObjectId(org_id)})
+            org = organizations_collection.find_one({"_id": ObjectId(org_id)})
             if org:
                 org_name = org.get("organizationName", "Unknown")
         
@@ -245,7 +245,7 @@ def get_admin_stats():
     if not admin:
         return jsonify({"error": "Unauthorized"}), 403
     
-    total_organizations = users_collection.count_documents({"role": "organization"})
+    total_organizations = organizations_collection.count_documents({"role": "organization"})
     total_candidates = candidate_credentials_collection.count_documents({})
     total_interviews = scheduled_interviews_collection.count_documents({})
     completed_interviews = scheduled_interviews_collection.count_documents({"completed": True})

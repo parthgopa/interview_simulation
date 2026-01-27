@@ -26,7 +26,6 @@ const STEPS = [
 
 const IMAGES = [
   "/logo1.png",
-  "/logo2.png",
   "/logo3.png",
   "/logo4.png",
 ];

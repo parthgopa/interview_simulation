@@ -15,7 +15,7 @@ print(MONGO_URI)
 print("MongoDB connection successful")
 db = client["ai_interview"]
 # print(db)
-users_collection = db["users"]
+organizations_collection = db["organizations"]
 interviews_collection = db["interviews"]
 candidate_interview = db["candidate_interview"]
 candidate_credentials_collection = db["candidate_credentials"]
