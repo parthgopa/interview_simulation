@@ -16,13 +16,11 @@ app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
-CORS(app, resources={
-    r"/*": {
-        "origins": ["http://localhost:5173", "https://interview.onewebmart.com"],
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"]
-    }
-},supports_credentials=True)
+CORS(
+    app,
+    resources={r"/*": {"origins": ["https://interview.onewebmart.com"]}},
+    supports_credentials=True
+)
 
 jwt = JWTManager(app)
 
