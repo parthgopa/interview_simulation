@@ -608,7 +608,7 @@ export default function ScheduleInterview() {
               <h4 className="fw-bold mb-4">Step 2: Experience & Skills</h4>
               
               <div className="row g-3">
-                <div className="col-12">
+                {/* <div className="col-12">
                   <h5 className="fw-bold mb-3">Past Work Experience</h5>
                 </div>
                 <div className="col-md-6">
@@ -638,7 +638,7 @@ export default function ScheduleInterview() {
                     }}
                     placeholder="e.g. Web Development"
                   />
-                </div>
+                </div> */}
 
                 <div className="col-12 mt-4">
                   <h5 className="fw-bold mb-3">Current Work Experience</h5>

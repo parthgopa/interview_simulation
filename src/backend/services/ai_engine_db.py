@@ -1,7 +1,9 @@
 import google.generativeai as genai
 import uuid
 import os
-from config import GEMINI_API_KEY, scheduled_interviews_collection
+import pickle
+from datetime import datetime, timedelta
+from config import GEMINI_API_KEY, scheduled_interviews_collection, interview_sessions_collection
 from services.prompt_service import PromptService
 from bson.objectid import ObjectId
 
@@ -10,8 +12,8 @@ print("GEMINI_API_KEY:", GEMINI_API_KEY)
 
 model = genai.GenerativeModel("gemini-2.5-flash")
 
-SESSIONS = {}
-print("SESSIONS:", SESSIONS)
+# No longer using in-memory SESSIONS - using MongoDB instead
+print("Using MongoDB for session storage (multi-worker compatible)")
 
 def create_session(config):
     print("\n" + "="*50)
@@ -66,14 +68,20 @@ def create_session(config):
     first_question = response.text.strip()
     print(f"\n🎤 First Question Generated:\n{first_question}")
 
-    SESSIONS[session_id] = {
-        "chat": chat,
+    # Store session in MongoDB instead of memory
+    session_data = {
+        "_id": session_id,
+        "chat_history": pickle.dumps(chat.history),  # Serialize chat history
         "answers": [],
         "questions": [first_question],
-        "qa_pairs": [{"question": first_question, "answer": None}]
+        "qa_pairs": [{"question": first_question, "answer": None}],
+        "created_at": datetime.utcnow(),
+        "expires_at": datetime.utcnow() + timedelta(hours=2)  # Auto-expire after 2 hours
     }
     
-    print(f"\n✅ Session stored with {len(chat.history)} messages in history")
+    interview_sessions_collection.insert_one(session_data)
+    
+    print(f"\n✅ Session stored in MongoDB with {len(chat.history)} messages in history")
     print("="*50 + "\n")
 
     return session_id, first_question
@@ -85,16 +93,23 @@ def next_question(session_id, answer, timeRemaining, scheduledInterviewId):
     print(f"Session ID: {session_id}")
     print(f"Candidate Answer: {answer}")
     
-    if session_id not in SESSIONS:
-        print("❌ Session not found!")
+    # Retrieve session from MongoDB
+    session_doc = interview_sessions_collection.find_one({"_id": session_id})
+    
+    if not session_doc:
+        print("❌ Session not found in MongoDB!")
         return "Session expired or invalid. Please restart the interview."
-
-    session = SESSIONS[session_id]
-    session["answers"].append(answer)
+    
+    # Deserialize chat history and recreate chat object
+    chat_history = pickle.loads(session_doc["chat_history"])
+    chat = model.start_chat(history=chat_history)
+    
+    # Update session data
+    session_doc["answers"].append(answer)
     
     # Update the last Q&A pair with the answer
-    if session["qa_pairs"]:
-        session["qa_pairs"][-1]["answer"] = answer
+    if session_doc["qa_pairs"]:
+        session_doc["qa_pairs"][-1]["answer"] = answer
 
     print(f"\n📝 Sending prompt to AI with candidate's answer...")
     
@@ -104,7 +119,7 @@ def next_question(session_id, answer, timeRemaining, scheduledInterviewId):
         time_remaining=timeRemaining
     )
     
-    response = session["chat"].send_message(next_question_prompt)
+    response = chat.send_message(next_question_prompt)
 
     next_q = response.text.strip()
     print("Next Question Tokens", response.usage_metadata.total_token_count)
@@ -119,9 +134,21 @@ def next_question(session_id, answer, timeRemaining, scheduledInterviewId):
         print("Failed to update tokens in scheduledInterviewsCollection")
     print(f"\n🎤 Next Question Generated:\n{next_q}")
     
-    # Store the new question
-    session["questions"].append(next_q)
-    session["qa_pairs"].append({"question": next_q, "answer": None})
+    # Store the new question and update MongoDB
+    session_doc["questions"].append(next_q)
+    session_doc["qa_pairs"].append({"question": next_q, "answer": None})
+    session_doc["chat_history"] = pickle.dumps(chat.history)  # Update chat history
+    
+    # Update session in MongoDB
+    interview_sessions_collection.update_one(
+        {"_id": session_id},
+        {"$set": {
+            "answers": session_doc["answers"],
+            "questions": session_doc["questions"],
+            "qa_pairs": session_doc["qa_pairs"],
+            "chat_history": session_doc["chat_history"]
+        }}
+    )
     
     print("="*50 + "\n")
     return next_q
@@ -132,8 +159,11 @@ def finish_interview(session_id, scheduledInterviewId):
     print("="*50)
     print(f"Session ID: {session_id}")
     
-    if session_id not in SESSIONS:
-        print("❌ Session not found!")
+    # Retrieve session from MongoDB
+    session_doc = interview_sessions_collection.find_one({"_id": session_id})
+    
+    if not session_doc:
+        print("❌ Session not found in MongoDB!")
         return {
             "score": 0,
             "strengths": ["No valid session found"],
@@ -143,14 +173,17 @@ def finish_interview(session_id, scheduledInterviewId):
             "raw_result": None
         }
     
-    session = SESSIONS[session_id]
-    violation_count = len(session.get("violations", []) or [])
+    # Deserialize chat history and recreate chat object
+    chat_history = pickle.loads(session_doc["chat_history"])
+    chat = model.start_chat(history=chat_history)
+    
+    violation_count = len(session_doc.get("violations", []) or [])
 
     # Get summary prompt from database
     summary_prompt = PromptService.get_summary_prompt(violation_count=violation_count)
     
     print(f"\n Sending Summary Prompt to AI:\n{summary_prompt}")
-    response = session["chat"].send_message(summary_prompt)
+    response = chat.send_message(summary_prompt)
     result = response.text
 
     # Increase Tokens count with summary tokens
@@ -203,10 +236,13 @@ def finish_interview(session_id, scheduledInterviewId):
         }
     
     # Add Q&A pairs to the evaluation
-    evaluation["qa_pairs"] = session["qa_pairs"]
+    evaluation["qa_pairs"] = session_doc["qa_pairs"]
     evaluation["raw_result"] = result
     
-    print(f"\n✅ Session removed from memory")
+    # Delete session from MongoDB after completion
+    interview_sessions_collection.delete_one({"_id": session_id})
+    
+    print(f"\n✅ Session removed from MongoDB")
     print(f"📋 Final Evaluation: {evaluation}")
     print("="*50 + "\n")
     

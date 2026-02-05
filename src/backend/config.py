@@ -22,6 +22,14 @@ candidate_credentials_collection = db["candidate_credentials"]
 scheduled_interviews_collection = db["scheduled_interviews"]
 interview_results_collection = db["interview_results"]
 prompts_collection = db["prompts"]
+interview_sessions_collection = db["interview_sessions"]
+
+# Create TTL index to auto-delete expired sessions
+try:
+    interview_sessions_collection.create_index("expires_at", expireAfterSeconds=0)
+    print("TTL index created for interview_sessions collection")
+except Exception as e:
+    print(f"TTL index already exists or error: {e}")
 
 # If any critical variable is not loaded, print an error message and exit
 if not MONGO_URI or not JWT_SECRET_KEY or not GEMINI_API_KEY:

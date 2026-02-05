@@ -28,7 +28,7 @@ export default function Pricing() {
         if (!token) {
             navigate("/login");
         } else {
-            navigate("/checkout", { state: { plan } });
+            navigate("/login", { state: { plan } });
         }
     };
 
