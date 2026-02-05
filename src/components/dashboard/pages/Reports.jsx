@@ -49,6 +49,16 @@ export default function Reports() {
     return ratings[rating] || "secondary";
   };
 
+  const calculateAverageScore = (scoreObj) => {
+    if (typeof scoreObj === 'number') return scoreObj;
+    if (typeof scoreObj === 'object' && scoreObj !== null) {
+      const scores = Object.values(scoreObj);
+      const average = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+      return (average * 10).toFixed(0); // Convert 0-5 scale to 0-50, then to 0-100
+    }
+    return 0;
+  };
+
   if (loading) {
     return (
       <div className="reports">
@@ -89,8 +99,8 @@ export default function Reports() {
                 <h3>{result.position}</h3>
                 <p className="result-meta">{result.interviewType} • {new Date(result.completed_at).toLocaleDateString()}</p>
               </div>
-              <div className={`score-badge score-${getScoreColor(result.score)}`}>
-                <span className="score-number">{result.score}</span>
+              <div className={`score-badge score-${getScoreColor(calculateAverageScore(result.score))}`}>
+                <span className="score-number">{calculateAverageScore(result.score)}</span>
                 <span className="score-label">/100</span>
               </div>
             </div>
@@ -125,6 +135,49 @@ export default function Reports() {
 
             {selectedResult === result._id && (
               <div className="result-details">
+                {/* Score Breakdown */}
+                {typeof result.score === 'object' && result.score !== null && (
+                  <div className="score-breakdown-section">
+                    <h4><FaTrophy /> Score Breakdown</h4>
+                    <div className="score-breakdown-list">
+                      {Object.entries(result.score).map(([category, score]) => (
+                        <div key={category} className="score-breakdown-row">
+                          <span className="breakdown-category">{category}</span>
+                          <div className="breakdown-bar-container">
+                            <div 
+                              className={`breakdown-bar score-${getScoreColor(score * 10)}`}
+                              style={{ width: `${(score / 5) * 100}%` }}
+                            >
+                              <span className="breakdown-score">{score}/5</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Improvement Guide */}
+                {result.improvement_guide && (
+                  <div className="improvement-guide-section">
+                    <h4><FaComments /> Improvement Guide</h4>
+                    <div className="improvement-guide-text">
+                      {result.improvement_guide}
+                    </div>
+                  </div>
+                )}
+
+                {/* Interview Verdict */}
+                {result.interview_verdict && (
+                  <div className="verdict-section">
+                    <h4><FaCode /> Interview Verdict</h4>
+                    <span className={`verdict-badge badge-${getRatingColor(result.interview_verdict)}`}>
+                      {result.interview_verdict}
+                    </span>
+                  </div>
+                )}
+
+                {/* Strengths and Improvements */}
                 <div className="feedback-section">
                   <div className="feedback-column strengths">
                     <h4><FaCheckCircle /> Strengths</h4>
@@ -144,22 +197,24 @@ export default function Reports() {
                   </div>
                 </div>
 
+                {/* Interview Transcript */}
                 {result.qa_pairs && result.qa_pairs.length > 0 && (
-                  <div className="qa-section" style={{ maxHeight: '400px', overflowY: 'scroll', paddingRight: '10px' }}>
+                  <div className="qa-section">
                     <h4>Interview Transcript</h4>
-                    {result.qa_pairs.map((qa, idx) => (
-                      
-                      <div key={idx} className="qa-pair">
-                        <div className="qa-question">
-                          <strong>Q{idx + 1}:</strong> {qa.question}
-                        </div>
-                        {qa.answer && (
-                          <div className="qa-answer">
-                            <strong>A:</strong> {qa.answer}
+                    <div className="qa-scroll-container">
+                      {result.qa_pairs.map((qa, idx) => (
+                        <div key={idx} className="qa-pair">
+                          <div className="qa-question">
+                            <strong>Q{idx + 1}:</strong> {qa.question}
                           </div>
-                        )}
-                      </div>
-                    ))}
+                          {qa.answer && (
+                            <div className="qa-answer">
+                              <strong>A:</strong> {qa.answer}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
               </div>

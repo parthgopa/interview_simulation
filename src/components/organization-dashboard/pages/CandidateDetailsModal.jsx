@@ -66,6 +66,16 @@ export default function CandidateDetailsModal({ candidateId, onClose }) {
     setTimeout(() => setCopiedField(""), 2000);
   };
 
+  const calculateAverageScore = (scoreObj) => {
+    if (typeof scoreObj === 'number') return scoreObj;
+    if (typeof scoreObj === 'object' && scoreObj !== null) {
+      const scores = Object.values(scoreObj);
+      const average = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+      return average.toFixed(1);
+    }
+    return 0;
+  };
+
   if (loading) {
     return (
       <div className="modal-overlay">
@@ -183,7 +193,7 @@ export default function CandidateDetailsModal({ candidateId, onClose }) {
                         </div>
                         {interview.hasResults && (
                           <div className="score-display">
-                            Score: <span className="score-value">{interview.score}%</span>
+                            Score: <span className="score-value">{calculateAverageScore(interview.score)}/10</span>
                           </div>
                         )}
                       </div>
@@ -259,7 +269,7 @@ export default function CandidateDetailsModal({ candidateId, onClose }) {
                             )}
                           </div>
                           <div className="score-large">
-                            Score: <span>{interview.score}%</span>
+                            Score: <span>{calculateAverageScore(interview.score)}/10</span>
                           </div>
                           <button 
                             className="btn-view-results"

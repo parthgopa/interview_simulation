@@ -61,9 +61,11 @@ class PromptService:
     
     @staticmethod
     def get_summary_prompt(violation_count):
+        print(violation_count)
         """Get formatted prompt for interview summary"""
         prompt_text = PromptService.get_prompt("summary_prompt")
-        return prompt_text.format(violation_count=violation_count)
+        # Use replace instead of format to avoid conflicts with JSON braces
+        return prompt_text.replace("{violation_count}", str(violation_count))
     
     @staticmethod
     def get_first_question_prompt():

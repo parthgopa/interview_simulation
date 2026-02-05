@@ -29,6 +29,7 @@ export default function InterviewResults() {
 
       if (res.ok) {
         const data = await res.json();
+        console.log(data)
         setResults(data);
       } else {
         console.error("Failed to fetch results");
@@ -67,6 +68,16 @@ export default function InterviewResults() {
     } finally {
       setPublishing(false);
     }
+  };
+
+  const calculateAverageScore = (scoreObj) => {
+    if (typeof scoreObj === 'number') return scoreObj;
+    if (typeof scoreObj === 'object' && scoreObj !== null) {
+      const scores = Object.values(scoreObj);
+      const average = scores.reduce((sum, val) => sum + val, 0) / scores.length;
+      return average.toFixed(1);
+    }
+    return 0;
   };
 
   const getScoreColor = (score) => {
@@ -141,24 +152,16 @@ export default function InterviewResults() {
         )}
       </div>
 
-      {/* Score Overview */}
-      <div className="results-grid mb-4">
+      {/* Score Overview - Score and Verdict side by side */}
+      <div className="score-verdict-grid mb-4">
         <Card className="score-card">
           <div className="score-circle-wrapper">
-            <div className={`score-circle score-${getScoreColor(results.score)}`}>
-              <span className="score-value">{results.score}</span>
+            <div className={`score-circle score-${getScoreColor(calculateAverageScore(results.score))}`}>
+              <span className="score-value">{calculateAverageScore(results.score)}</span>
               <span className="score-label">/ 10</span>
             </div>
           </div>
-          <h4>Overall Score</h4>
-        </Card>
-
-        <Card className="rating-card">
-          <FaComments className="rating-icon" />
-          <h4>Improvement Guide</h4>
-          <span className={`rating-badge badge-${getRatingColor(results.improvement_guide)}`}>
-            <ReactMarkdown>{results.improvement_guide}</ReactMarkdown>
-          </span>
+          <h4>Average Score</h4>
         </Card>
 
         <Card className="rating-card">
@@ -169,6 +172,39 @@ export default function InterviewResults() {
           </span>
         </Card>
       </div>
+
+      {/* Improvement Guide - Full width below */}
+      <Card className="improvement-guide-card mb-4">
+        <div className="improvement-guide-header">
+          <FaComments className="guide-icon" />
+          <h3>Improvement Guide</h3>
+        </div>
+        <div className="improvement-guide-content">
+          <ReactMarkdown>{results.improvement_guide}</ReactMarkdown>
+        </div>
+      </Card>
+
+      {/* Score Breakdown */}
+      {typeof results.score === 'object' && results.score !== null && (
+        <Card className="score-breakdown-card mb-4">
+          <h3 className="mb-3">Score Breakdown</h3>
+          <div className="score-breakdown-grid">
+            {Object.entries(results.score).map(([category, score]) => (
+              <div key={category} className="score-breakdown-item">
+                <div className="score-category">{category}</div>
+                <div className="score-bar-container">
+                  <div 
+                    className={`score-bar score-${getScoreColor(score)}`}
+                    style={{ width: `${(score / 10) * 100}%` }}
+                  >
+                    <span className="score-bar-value">{score}/10</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
 
       {/* Strengths and Improvements */}
       <div className="feedback-grid mb-4">
