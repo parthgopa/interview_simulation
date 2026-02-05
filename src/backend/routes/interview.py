@@ -76,7 +76,7 @@ def end():
             "strengths": feedback.get("strengths", []),
             "improvements": feedback.get("improvements", []),
             "communication": feedback.get("communication", "Average"),
-            "technical_depth": feedback.get("technical_depth", "Average"),
+            "improvement_guide": feedback.get("improvement_guide", "Average"),
             "qa_pairs": feedback.get("qa_pairs", []),
             "raw_result": feedback.get("raw_result", ""),
             "completed_at": datetime.utcnow(),

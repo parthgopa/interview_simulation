@@ -77,6 +77,7 @@ def login():
     email = data.get("email")
     password = data.get("password")
     role = data.get("role", "candidate")
+    print(data)
 
     if not email or not password:
         return jsonify({"error": "Email and password are required"}), 400

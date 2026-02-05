@@ -9,7 +9,7 @@ import { backendURL } from "../../../pages/Home";
 
 export default function Overview() {
   const navigate = useNavigate();
-  const [interviews, setInterviews] = useState([]);
+  const [interviews, setInterviews] = useState([] || [].length);
   const [lastInterview, setLastInterview] = useState(null);
 
   const [resultsScore, setResultsScore] = useState([]);
@@ -40,7 +40,7 @@ export default function Overview() {
       if (res.ok) {
         const data = await res.json();
         // console.log(data)
-        setInterviews(data.scheduledInterviews.length || []);
+        setInterviews(data.scheduledInterviews.length || 0);
         // console.log(data.scheduledInterviews.length)
 
         // IF interview is completed then add it to completedInterviews, and get completedAt
@@ -60,12 +60,15 @@ export default function Overview() {
         // let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         // let seconds = Math.floor((diff % (1000 * 60)) / 1000);
         // console.log(days)
+        // what if candidate has not taken any interview
         if (days === 0) {
-          setLastInterview(hours + " hours ago");
+          setLastInterview(hours || 0 + " hours ago");
         } else {
-          setLastInterview(days + " days ago");
+          setLastInterview(days || 0 + " days ago");
         }
-        console.log(lastInterview)
+        console.log(days)
+        console.log(hours)
+        // console.log(lastInterview)
 
         // console.log(data)
         // localStorage.setItem("scheduledInterviews", JSON.stringify(data.scheduledInterviews || []));
@@ -98,9 +101,9 @@ export default function Overview() {
           }
         }
         averageScore = averageScore / data.results.length;
-        console.log(averageScore)
-        setResultsScore(averageScore);
-        setBestScore(bestScore);
+        // console.log(averageScore)
+        setResultsScore(averageScore || 0);
+        setBestScore(bestScore || 0);
       }
     } catch (error) {
       console.error("Error fetching results:", error);

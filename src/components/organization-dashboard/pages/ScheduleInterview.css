@@ -182,3 +182,88 @@
 .row.g-3 {
   --bs-gutter-y: 1.5rem;
 }
+
+/* Step Indicator Styles */
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.step-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 3px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  z-index: 2;
+}
+
+.step-item.active .step-circle {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.step-item.completed .step-circle {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+}
+
+.step-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.step-item.active .step-label {
+  color: var(--accent-primary);
+}
+
+.step-line {
+  width: 120px;
+  height: 3px;
+  background: var(--border-light);
+  margin: 0 -10px;
+  margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.step-line.completed {
+  background: var(--accent-primary);
+}
+
+.step-content {
+  min-height: 400px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -18,7 +18,7 @@ app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
 CORS(
     app,
-    resources={r"/*": {"origins": ["https://interview.onewebmart.com"]}},
+    resources={r"/*": {"origins": ["https://interview.onewebmart.com", "http://localhost:5173"]}},
     supports_credentials=True
 )
 

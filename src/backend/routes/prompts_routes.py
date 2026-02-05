@@ -33,6 +33,7 @@ def update_prompt():
     try:
         data = request.json
         prompt_id = data.get('_id')
+        # print(data)
         
         if not prompt_id:
             return jsonify({"error": "Prompt ID is required"}), 400
@@ -59,6 +60,7 @@ def update_prompt_by_id(prompt_id):
     """Update a prompt by ID"""
     try:
         data = request.json
+        print(data)
         
         update_data = {
             "prompt_text": data.get('prompt_text'),

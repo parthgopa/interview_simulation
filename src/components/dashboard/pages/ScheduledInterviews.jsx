@@ -26,6 +26,7 @@ export default function ScheduledInterviews() {
           "Authorization": `Bearer ${token}`
         }
       });
+      console.log(res)
 
       if (res.ok) {
         const data = await res.json();
@@ -45,7 +46,19 @@ export default function ScheduledInterviews() {
     // console.log(interview)
     navigate("/interview", {
       state: {
+        //step-1
+        candidateName: interview.candidateName,
         role: interview.position,
+        natureOfRole: interview.natureOfPosition,
+        educationalQualification: interview.educationalQualification,
+        //step-2
+        pastYearsExperience: interview.pastWorkExperienceYears,
+        pastYearsExperienceField: interview.pastWorkExperienceField,
+        currentYearExperience: interview.currentWorkExperienceYears,
+        currentYearExperienceField: interview.currentWorkExperienceField,
+        coreSkillSet: interview.coreSkillSet,
+        typeOfCompany: interview.typeOfCompany,
+        //step-3
         interviewType: interview.interviewType,
         duration: interview.duration,
         credentialId: interview.credentialId,

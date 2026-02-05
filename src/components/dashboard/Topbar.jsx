@@ -35,10 +35,10 @@ export default function Topbar() {
       
       <div className="topbar-right-section">
         {/* Status indicator for AI Readiness */}
-        <div className="system-status-pill d-none d-md-flex">
+        {/* <div className="system-status-pill d-none d-md-flex">
           <span className="status-dot-pulse"></span>
           AI Assistant Online
-        </div>
+        </div> */}
 
         <div className="topbar-vertical-divider"></div>
 

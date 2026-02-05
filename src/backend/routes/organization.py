@@ -77,10 +77,17 @@ def schedule_interview():
         "candidateEmail": candidate_email,
         "credentialId": credential_id,
         "position": data["position"],
+        "natureOfPosition": data.get("natureOfPosition", ""),
+        "educationalQualification": data.get("educationalQualification", ""),
+        "pastWorkExperienceYears": data.get("pastWorkExperienceYears", ""),
+        "pastWorkExperienceField": data.get("pastWorkExperienceField", ""),
+        "currentWorkExperienceYears": data.get("currentWorkExperienceYears", ""),
+        "currentWorkExperienceField": data.get("currentWorkExperienceField", ""),
+        "coreSkillSet": data.get("coreSkillSet", ""),
+        "typeOfCompany": data.get("typeOfCompany", ""),
         "schedulingType": data["schedulingType"],
         "interviewType": data["interviewType"],
         "duration": data["duration"],
-        "notes": data.get("notes", ""),
         "status": "scheduled",
         "completed": False,
         "createdAt": datetime.now()
@@ -113,7 +120,7 @@ def schedule_interview():
     from services.email_templates import get_interview_credentials_template
     # 2. Generate the HTML using the template
     schedule_info = "Specific Date and Time" if data["schedulingType"] == "specific" else f"{data['daysTimer']} days from now"
-    login_url = "https://yourportal.com/login" # Change to your real URL
+    login_url = "https://interview.onewebmart.com/login" # Change to your real URL
     html_body = get_interview_credentials_template(
         candidate_name=candidate_name,
         position=data["position"],
@@ -206,10 +213,17 @@ def schedule_interview_resume():
         "credentialId": credential_id,
         "resumePath": filepath,
         "position": data.get("position"),
+        "natureOfPosition": data.get("natureOfPosition", ""),
+        "educationalQualification": data.get("educationalQualification", ""),
+        "pastWorkExperienceYears": data.get("pastWorkExperienceYears", ""),
+        "pastWorkExperienceField": data.get("pastWorkExperienceField", ""),
+        "currentWorkExperienceYears": data.get("currentWorkExperienceYears", ""),
+        "currentWorkExperienceField": data.get("currentWorkExperienceField", ""),
+        "coreSkillSet": data.get("coreSkillSet", ""),
+        "typeOfCompany": data.get("typeOfCompany", ""),
         "schedulingType": data.get("schedulingType"),
         "interviewType": data.get("interviewType"),
         "duration": int(data.get("duration", 30)),
-        "notes": data.get("notes", ""),
         "status": "scheduled",
         "completed": False,
         "createdAt": datetime.now()
@@ -222,6 +236,33 @@ def schedule_interview_resume():
         scheduled_interview["deadline"] = datetime.now() + timedelta(days=int(data.get("daysTimer", 2)))
     
     result = scheduled_interviews_collection.insert_one(scheduled_interview)
+    
+    # Print all scheduled interview details
+    print("\n" + "="*80)
+    print("SCHEDULED INTERVIEW DETAILS (RESUME UPLOAD)")
+    print("="*80)
+    print(f"Interview ID: {result.inserted_id}")
+    print(f"Organization: {user.get('organizationName')}")
+    print(f"Candidate Name: {candidate_name}")
+    print(f"Candidate Email: {candidate_email}")
+    print(f"Resume Path: {filepath}")
+    print(f"Position: {data.get('position')}")
+    print(f"Nature of Position: {data.get('natureOfPosition', 'N/A')}")
+    print(f"Educational Qualification: {data.get('educationalQualification', 'N/A')}")
+    print(f"Past Work Experience: {data.get('pastWorkExperienceYears', 'N/A')} years in {data.get('pastWorkExperienceField', 'N/A')}")
+    print(f"Current Work Experience: {data.get('currentWorkExperienceYears', 'N/A')} years in {data.get('currentWorkExperienceField', 'N/A')}")
+    print(f"Core Skill Set: {data.get('coreSkillSet', 'N/A')}")
+    print(f"Type of Company: {data.get('typeOfCompany', 'N/A')}")
+    print(f"Interview Type: {data.get('interviewType')}")
+    print(f"Duration: {data.get('duration', 30)} minutes")
+    print(f"Scheduling Type: {data.get('schedulingType')}")
+    if data.get('schedulingType') == 'specific':
+        print(f"Scheduled Date & Time: {data.get('specificDate')} {data.get('specificTime')}")
+    else:
+        print(f"Days Timer: {data.get('daysTimer')} days")
+    print(f"Credentials - Username: {username}, Password: {password}")
+    print(f"Created At: {datetime.now()}")
+    print("="*80 + "\n")
     
     interviews_collection.insert_one({
         "organizationId": user_id,
@@ -262,9 +303,16 @@ def get_interviews():
             "candidateName": interview.get("candidateName"),
             "candidateEmail": interview.get("candidateEmail"),
             "position": interview.get("position"),
+            "natureOfPosition": interview.get("natureOfPosition"),
+            "educationalQualification": interview.get("educationalQualification"),
+            "pastWorkExperienceYears": interview.get("pastWorkExperienceYears"),
+            "pastWorkExperienceField": interview.get("pastWorkExperienceField"),
+            "currentWorkExperienceYears": interview.get("currentWorkExperienceYears"),
+            "currentWorkExperienceField": interview.get("currentWorkExperienceField"),
+            "coreSkillSet": interview.get("coreSkillSet"),
+            "typeOfCompany": interview.get("typeOfCompany"),
             "interviewType": interview.get("interviewType"),
             "duration": interview.get("duration"),
-            "notes": interview.get("notes"),
             "status": "completed" if interview.get("completed") else "scheduled",
             "daysTimer": interview.get("daysTimer"),
             "scheduledDate": interview.get("scheduledDate"),
@@ -301,9 +349,16 @@ def update_interview(interview_id):
             "candidateName": data.get("candidateName"),
             "candidateEmail": data.get("candidateEmail"),
             "position": data.get("position"),
+            "natureOfPosition": data.get("natureOfPosition", ""),
+            "educationalQualification": data.get("educationalQualification", ""),
+            "pastWorkExperienceYears": data.get("pastWorkExperienceYears", ""),
+            "pastWorkExperienceField": data.get("pastWorkExperienceField", ""),
+            "currentWorkExperienceYears": data.get("currentWorkExperienceYears", ""),
+            "currentWorkExperienceField": data.get("currentWorkExperienceField", ""),
+            "coreSkillSet": data.get("coreSkillSet", ""),
+            "typeOfCompany": data.get("typeOfCompany", ""),
             "interviewType": data.get("interviewType"),
             "duration": data.get("duration"),
-            "notes": data.get("notes", ""),
             "schedulingType": data.get("schedulingType")
         }
         
@@ -422,16 +477,100 @@ def get_candidates_list():
         return jsonify({"error": "Unauthorized"}), 403
     
     candidates = list(candidate_credentials_collection.find({"organizationId": user_id }))
-    print(candidates)
+    # print(candidates)
     candidates_list = []
     for candidate in candidates:
+        credential_id = str(candidate["_id"])
+        
+        # Count interviews for this candidate
+        interview_count = scheduled_interviews_collection.count_documents({"credentialId": credential_id})
+        
+        # Get latest interview position
+        latest_interview = scheduled_interviews_collection.find_one(
+            {"credentialId": credential_id},
+            sort=[("createdAt", -1)]
+        )
+        
         candidates_list.append({
+            "_id": credential_id,
+            "name": candidate.get("name"),
+            "email": candidate.get("email"),
+            "interviewCount": interview_count,
+            "position": latest_interview.get("position") if latest_interview else None,
+            "status": "active"
+        })
+        
+    return jsonify({"candidates": candidates_list}), 200
+
+@organization_bp.route("/candidate-details/<credential_id>", methods=["GET"])
+@jwt_required()
+def get_candidate_details(credential_id):
+    user_id = get_jwt_identity()
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if not user or user.get("role") != "organization":
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    try:
+        # Get candidate credentials
+        candidate = candidate_credentials_collection.find_one({"_id": ObjectId(credential_id)})
+        
+        if not candidate or candidate.get("organizationId") != user_id:
+            return jsonify({"error": "Candidate not found"}), 404
+        
+        # Get all scheduled interviews for this candidate
+        interviews = list(scheduled_interviews_collection.find({"credentialId": credential_id}))
+        
+        interviews_data = []
+        for interview in interviews:
+            interview_id = str(interview["_id"])
+            
+            # Get interview results if available
+            result = interview_results_collection.find_one({"scheduledInterviewId": interview_id})
+            
+            # Helper function to safely convert datetime to isoformat
+            def safe_isoformat(value):
+                if value is None:
+                    return None
+                if isinstance(value, str):
+                    return value  # Already a string, return as-is
+                if hasattr(value, 'isoformat'):
+                    return value.isoformat()  # datetime object
+                return str(value)  # Fallback to string conversion
+            
+            interview_info = {
+                "_id": interview_id,
+                "position": interview.get("position"),
+                "interviewType": interview.get("interviewType"),
+                "schedulingType": interview.get("schedulingType"),
+                "duration": interview.get("duration"),
+                "status": interview.get("status"),
+                "completed": interview.get("completed", False),
+                "createdAt": safe_isoformat(interview.get("createdAt")),
+                "deadline": safe_isoformat(interview.get("deadline")),
+                "scheduledDate": safe_isoformat(interview.get("scheduledDate")),
+                "notes": interview.get("notes"),
+                "hasResults": result is not None,
+                "score": result.get("score") if result else None,
+                "published": result.get("published", False) if result else False
+            }
+            interviews_data.append(interview_info)
+        
+        candidate_details = {
             "_id": str(candidate["_id"]),
             "name": candidate.get("name"),
-            "email": candidate.get("email")
-        })
-    
-    return jsonify({"candidates": candidates_list}), 200
+            "email": candidate.get("email"),
+            "username": candidate.get("username"),
+            "plainPassword": candidate.get("plainPassword"),
+            "createdAt": candidate.get("createdAt").isoformat() if candidate.get("createdAt") else None,
+            "totalInterviews": len(interviews_data),
+            "interviews": interviews_data
+        }
+        
+        return jsonify(candidate_details), 200
+    except Exception as e:
+        print(f"Error fetching candidate details: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @organization_bp.route("/add-candidate", methods=["POST"])
 @jwt_required()
@@ -465,6 +604,7 @@ def add_candidate():
         "username": username,
         "password": generate_password_hash(password),
         "plainPassword": password,
+        "organizationId": user_id,
         "createdAt": datetime.now()
     }
     
@@ -478,6 +618,83 @@ def add_candidate():
             "email": candidate_email
         }
     }), 201
+
+@organization_bp.route("/edit-candidate/<credential_id>", methods=["PUT"])
+@jwt_required()
+def edit_candidate(credential_id):
+    user_id = get_jwt_identity()
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if not user or user.get("role") != "organization":
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    try:
+        candidate = candidate_credentials_collection.find_one({"_id": ObjectId(credential_id)})
+        
+        if not candidate or candidate.get("organizationId") != user_id:
+            return jsonify({"error": "Candidate not found"}), 404
+        
+        data = request.json
+        
+        if not data.get("name") or not data.get("email"):
+            return jsonify({"error": "Name and email are required"}), 400
+        
+        if data["email"] != candidate["email"]:
+            existing = candidate_credentials_collection.find_one({
+                "email": data["email"],
+                "_id": {"$ne": ObjectId(credential_id)}
+            })
+            if existing:
+                return jsonify({"error": "Email already exists"}), 409
+        
+        update_data = {
+            "name": data["name"],
+            "email": data["email"]
+        }
+        
+        candidate_credentials_collection.update_one(
+            {"_id": ObjectId(credential_id)},
+            {"$set": update_data}
+        )
+        
+        scheduled_interviews_collection.update_many(
+            {"credentialId": credential_id},
+            {"$set": {
+                "candidateName": data["name"],
+                "candidateEmail": data["email"]
+            }}
+        )
+        
+        return jsonify({"message": "Candidate updated successfully"}), 200
+    except Exception as e:
+        print(f"Error updating candidate: {e}")
+        return jsonify({"error": str(e)}), 500
+
+@organization_bp.route("/delete-candidate/<credential_id>", methods=["DELETE"])
+@jwt_required()
+def delete_candidate(credential_id):
+    user_id = get_jwt_identity()
+    user = organizations_collection.find_one({"_id": ObjectId(user_id)})
+    
+    if not user or user.get("role") != "organization":
+        return jsonify({"error": "Unauthorized"}), 403
+    
+    try:
+        candidate = candidate_credentials_collection.find_one({"_id": ObjectId(credential_id)})
+        
+        if not candidate or candidate.get("organizationId") != user_id:
+            return jsonify({"error": "Candidate not found"}), 404
+        
+        candidate_credentials_collection.delete_one({"_id": ObjectId(credential_id)})
+        
+        scheduled_interviews_collection.delete_many({"credentialId": credential_id})
+        
+        interview_results_collection.delete_many({"credentialId": credential_id})
+        
+        return jsonify({"message": "Candidate deleted successfully"}), 200
+    except Exception as e:
+        print(f"Error deleting candidate: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @organization_bp.route("/interview-results/<interview_id>", methods=["GET"])
 @jwt_required()
@@ -506,8 +723,8 @@ def get_interview_results(interview_id):
             "score": result.get("score", 0),
             "strengths": result.get("strengths", []),
             "improvements": result.get("improvements", []),
-            "communication": result.get("communication", "Average"),
-            "technical_depth": result.get("technical_depth", "Average"),
+            "improvement_guide": result.get("improvement_guide", "Average"),
+            "interview_verdict": result.get("interview_verdict", "Average"),
             "qa_pairs": result.get("qa_pairs", []),
             "completed_at": result.get("completed_at").isoformat() if result.get("completed_at") else None,
             "published": result.get("published", False)

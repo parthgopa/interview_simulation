@@ -24,9 +24,17 @@ def create_session(config):
 
     # Get system prompt from database
     system_prompt = PromptService.get_system_prompt(
-        interviewType=config.get('interviewType'),
+        candidateName=config.get('candidateName'),
         role=config.get('role'),
-        level=config.get('level'),
+        natureOfRole = config.get('natureOfRole'),
+        educationalQualification=config.get('educationalQualification'),
+        pastYearsExperience=config.get('pastYearsExperience'),
+        pastYearsExperienceField=config.get('pastYearsExperienceField'),
+        currentYearExperience=config.get('currentYearExperience'),
+        currentYearExperienceField=config.get('currentYearExperienceField'),
+        coreSkillSet=config.get('coreSkillSet'),
+        typeOfCompany=config.get('typeOfCompany'),
+        interviewType=config.get('interviewType'),
         duration=config.get('duration')
     )
     
@@ -160,8 +168,24 @@ def finish_interview(session_id, scheduledInterviewId):
     # Try to parse JSON, fallback to default if parsing fails
     import json
     try:
-        evaluation = json.loads(result)
-    except:
+        print("JSON Result:", result)
+        
+        # Strip markdown code block markers if present
+        cleaned_result = result.strip()
+        if cleaned_result.startswith("```json"):
+            cleaned_result = cleaned_result[7:]  # Remove ```json
+        elif cleaned_result.startswith("```"):
+            cleaned_result = cleaned_result[3:]  # Remove ```
+        
+        if cleaned_result.endswith("```"):
+            cleaned_result = cleaned_result[:-3]  # Remove trailing ```
+        
+        cleaned_result = cleaned_result.strip()
+        print("Cleaned JSON:", cleaned_result)
+        
+        evaluation = json.loads(cleaned_result)
+    except Exception as e:
+        print(f"Error parsing JSON: {e}")
         evaluation = {
             "score": 75,
             "strengths": [
@@ -174,8 +198,8 @@ def finish_interview(session_id, scheduledInterviewId):
                 "Improve structure",
                 "Be more concise"
             ],
-            "communication": "Good",
-            "technical_depth": "Average"
+            "improvement_guide": "Good",
+            "interview_verdict": "Average"
         }
     
     # Add Q&A pairs to the evaluation

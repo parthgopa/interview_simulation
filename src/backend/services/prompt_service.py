@@ -32,13 +32,21 @@ class PromptService:
             raise
     
     @staticmethod
-    def get_system_prompt(interviewType, role, level, duration):
+    def get_system_prompt(candidateName, role, natureOfRole, educationalQualification, pastYearsExperience, pastYearsExperienceField, currentYearExperience, currentYearExperienceField, coreSkillSet, typeOfCompany, interviewType, duration):
         """Get formatted system prompt for interview initialization"""
         prompt_text = PromptService.get_prompt("system_prompt")
         return prompt_text.format(
-            interviewType=interviewType,
+            candidateName=candidateName,
             role=role,
-            level=level,
+            natureOfRole=natureOfRole,
+            educationalQualification= educationalQualification,
+            pastYearsExperience=pastYearsExperience,
+            pastYearsExperienceField=pastYearsExperienceField,
+            currentYearExperience=currentYearExperience,
+            currentYearExperienceField=currentYearExperienceField,
+            coreSkillSet=coreSkillSet,
+            typeOfCompany=typeOfCompany,
+            interviewType=interviewType,
             duration=duration
         )
     

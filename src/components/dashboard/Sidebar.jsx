@@ -54,17 +54,13 @@ export default function Sidebar() {
 
         <div className="nav-divider"></div>
 
-        <NavLink to="/dashboard/profile" className="nav-item-link">
+        {/* <NavLink to="/dashboard/profile" className="nav-item-link">
           <HiOutlineUserCircle className="nav-link-icon" />
           <span>Profile Settings</span>
-        </NavLink>
+        </NavLink> */}
       </nav>
       
-      {/* Sidebar Footer Hint */}
-      <div className="sidebar-status-hint">
-        <div className="status-indicator online"></div>
-        <span>AI Server Ready</span>
-      </div>
+
     </aside>
   );
 }

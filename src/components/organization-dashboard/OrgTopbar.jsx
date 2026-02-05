@@ -30,10 +30,10 @@ export default function OrgTopbar() {
       
       <div className="topbar-right">
         {/* Utility Icons */}
-        <button className="topbar-icon-btn" aria-label="Notifications">
+        {/* <button className="topbar-icon-btn" aria-label="Notifications">
           <HiOutlineBell />
           <span className="notification-dot"></span>
-        </button>
+        </button> */}
 
         <div className="topbar-divider"></div>
 

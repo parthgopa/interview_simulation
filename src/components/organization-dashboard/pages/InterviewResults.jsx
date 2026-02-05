@@ -5,6 +5,7 @@ import { FaArrowLeft, FaCheckCircle, FaExclamationTriangle, FaChartBar, FaCommen
 import "./InterviewResults.css";
 import Card from "../../../ui/Card";
 import { backendURL } from "../../../pages/Home";
+import ReactMarkdown from "react-markdown";
 
 export default function InterviewResults() {
   const { interviewId } = useParams();
@@ -69,8 +70,8 @@ export default function InterviewResults() {
   };
 
   const getScoreColor = (score) => {
-    if (score >= 80) return "success";
-    if (score >= 60) return "warning";
+    if (score >= 8) return "success";
+    if (score >= 6) return "warning";
     return "error";
   };
 
@@ -146,7 +147,7 @@ export default function InterviewResults() {
           <div className="score-circle-wrapper">
             <div className={`score-circle score-${getScoreColor(results.score)}`}>
               <span className="score-value">{results.score}</span>
-              <span className="score-label">/ 100</span>
+              <span className="score-label">/ 10</span>
             </div>
           </div>
           <h4>Overall Score</h4>
@@ -154,17 +155,17 @@ export default function InterviewResults() {
 
         <Card className="rating-card">
           <FaComments className="rating-icon" />
-          <h4>Communication</h4>
-          <span className={`rating-badge badge-${getRatingColor(results.communication)}`}>
-            {results.communication}
+          <h4>Improvement Guide</h4>
+          <span className={`rating-badge badge-${getRatingColor(results.improvement_guide)}`}>
+            <ReactMarkdown>{results.improvement_guide}</ReactMarkdown>
           </span>
         </Card>
 
         <Card className="rating-card">
           <FaCode className="rating-icon" />
-          <h4>Technical Depth</h4>
-          <span className={`rating-badge badge-${getRatingColor(results.technical_depth)}`}>
-            {results.technical_depth}
+          <h4>Interview Verdict</h4>
+          <span className={`rating-badge badge-${getRatingColor(results.interview_verdict)}`}>
+            {results.interview_verdict}
           </span>
         </Card>
       </div>

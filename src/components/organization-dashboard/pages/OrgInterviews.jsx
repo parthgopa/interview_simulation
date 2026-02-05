@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../../services/token";
-import { FaCopy, FaEdit, FaTrash, FaEye, FaCheckCircle, FaClock, FaCalendarAlt, FaUser, FaBriefcase, FaChartLine } from "react-icons/fa";
+import { FaCopy, FaEdit, FaTrash, FaEye, FaCheckCircle, FaClock, FaCalendarAlt, FaUser, FaBriefcase, FaChartLine, FaSearch, FaTimes } from "react-icons/fa";
 import "./OrgInterviews.css";
 import Card from "../../../ui/Card";
 import { backendURL } from "../../../pages/Home";
@@ -13,6 +13,8 @@ export default function OrgInterviews() {
   const [filter, setFilter] = useState("all");
   const [showCredentials, setShowCredentials] = useState(null);
   const [copiedField, setCopiedField] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedRole, setSelectedRole] = useState("all");
 
   useEffect(() => {
     fetchInterviews();
@@ -87,10 +89,38 @@ export default function OrgInterviews() {
     return badges[status] || "badge";
   };
 
+  // Get unique job roles for filter dropdown
+  const uniqueRoles = [...new Set(interviews.map(i => i.position).filter(Boolean))];
+
   const filteredInterviews = interviews.filter(interview => {
-    if (filter === "all") return true;
-    return interview.status === filter;
+    // Status filter
+    if (filter !== "all" && interview.status !== filter) return false;
+    
+    // Role filter
+    if (selectedRole !== "all" && interview.position !== selectedRole) return false;
+    
+    // Search filter (name or email)
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      const name = (interview.candidateName || "").toLowerCase();
+      const email = (interview.candidateEmail || "").toLowerCase();
+      const role = (interview.position || "").toLowerCase();
+      
+      if (!name.includes(search) && !email.includes(search) && !role.includes(search)) {
+        return false;
+      }
+    }
+    
+    return true;
   });
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setSelectedRole("all");
+    setFilter("all");
+  };
+
+  const hasActiveFilters = searchTerm || selectedRole !== "all" || filter !== "all";
 
   if (loading) {
     return (
@@ -105,23 +135,73 @@ export default function OrgInterviews() {
 
   return (
     <div className="org-interviews-container fade-in">
-      {/* Header with Filter Controls */}
-      <div className="interviews-header d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
-        <div>
-          <h2 className="dashboard-title mb-1">All Interviews</h2>
-          <p className="text-muted small mb-0">Manage and track all candidate sessions</p>
-        </div>
-        
-        <div className="filter-group shadow-sm">
-          {["all", "scheduled", "completed"].map((type) => (
-            <button
-              key={type}
-              className={`filter-btn ${filter === type ? "active" : ""}`}
-              onClick={() => setFilter(type)}
-            >
-              {type.charAt(0).toUpperCase() + type.slice(1)}
+      {/* Header */}
+      <div className="interviews-header mb-4">
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h2 className="dashboard-title mb-1">All Interviews</h2>
+            <p className="text-muted small mb-0">
+              {filteredInterviews.length} of {interviews.length} interviews
+              {hasActiveFilters && " (filtered)"}
+            </p>
+          </div>
+          {hasActiveFilters && (
+            <button className="btn-clear-filters" onClick={clearFilters}>
+              <FaTimes /> Clear Filters
             </button>
-          ))}
+          )}
+        </div>
+
+        {/* Filter Controls */}
+        <div className="filters-container">
+          {/* Search Bar */}
+          <div className="search-box">
+            <FaSearch className="search-icon" />
+            <input
+              type="text"
+              placeholder="Search by name, email, or role..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            {searchTerm && (
+              <button 
+                className="search-clear-btn"
+                onClick={() => setSearchTerm("")}
+                title="Clear search"
+              >
+                <FaTimes />
+              </button>
+            )}
+          </div>
+
+          {/* Role Filter Dropdown */}
+          <div className="filter-dropdown">
+            <FaBriefcase className="dropdown-icon" />
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="role-select"
+            >
+              <option value="all">All Roles</option>
+              {uniqueRoles.map(role => (
+                <option key={role} value={role}>{role}</option>
+              ))}
+            </select>
+          </div>
+ 
+          {/* Status Filter */}
+          <div className="filter-group">
+            {["all", "scheduled", "completed"].map((type) => (
+              <button
+                key={type}
+                className={`filter-btn ${filter === type ? "active" : ""}`}
+                onClick={() => setFilter(type)}
+              >
+                {type.charAt(0).toUpperCase() + type.slice(1)}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
