@@ -75,7 +75,7 @@ def end():
             "score": feedback.get("score", 0),
             "strengths": feedback.get("strengths", []),
             "improvements": feedback.get("improvements", []),
-            "communication": feedback.get("communication", "Average"),
+            "interview_verdict": feedback.get("interview_verdict", "Average"),
             "improvement_guide": feedback.get("improvement_guide", "Average"),
             "qa_pairs": feedback.get("qa_pairs", []),
             "raw_result": feedback.get("raw_result", ""),
