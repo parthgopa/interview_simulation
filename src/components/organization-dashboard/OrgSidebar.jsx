@@ -40,6 +40,11 @@ export default function OrgSidebar() {
             <span>All Interviews</span>
           </NavLink>
 
+          <NavLink to="/organization/dashboard/cv-analyser" className="org-nav-item">
+            <HiOutlineClipboardDocumentList className="org-nav-icon" />
+            <span>CV Analyser</span>
+          </NavLink>
+
           <NavLink to="/organization/dashboard/candidates" className="org-nav-item">
             <HiOutlineUsers className="org-nav-icon" />
             <span>Candidates</span>

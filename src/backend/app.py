@@ -11,6 +11,7 @@ from routes.candidate_route import candidate_bp
 from routes.pricing_routes import pricing_bp
 from routes.admin import admin_bp
 from routes.prompts_routes import prompts_bp
+from routes.resume_screening import resume_screening_bp
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = JWT_SECRET_KEY
@@ -40,6 +41,7 @@ app.register_blueprint(candidate_bp, url_prefix="/candidate")
 app.register_blueprint(pricing_bp, url_prefix="/pricing-api")
 app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(prompts_bp, url_prefix="/prompts-api")
+app.register_blueprint(resume_screening_bp, url_prefix="/api")
 
 if __name__ == "__main__":
     app.run(debug=True, port=5003)

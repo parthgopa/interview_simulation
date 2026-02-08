@@ -24,6 +24,10 @@ interview_results_collection = db["interview_results"]
 prompts_collection = db["prompts"]
 interview_sessions_collection = db["interview_sessions"]
 
+# Resume Screening collections
+screening_jobs_collection = db["screening_jobs"]
+screening_resumes_collection = db["screening_resumes"]
+
 # Create TTL index to auto-delete expired sessions
 try:
     interview_sessions_collection.create_index("expires_at", expireAfterSeconds=0)

@@ -32,6 +32,8 @@ import AdminLogin from "./admin/AdminLogin";
 import AdminSignup from "./admin/AdminSignup";
 import AdminDashboard from "./admin/AdminDashboard";
 import ContactUs from "./pages/ContactUs";
+import OrgCvAnalyzer from "./components/organization-dashboard/pages/OrgCvAnalyzer";
+import OrgCvHistory from "./components/organization-dashboard/pages/OrgCvHistory";
 
 function LayoutWrapper() {
   return (
@@ -132,6 +134,22 @@ function App() {
           <ProtectedRoute>
             <OrgDashboardLayout>
               <ScheduleInterview />
+            </OrgDashboardLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/organization/dashboard/cv-analyser" element={
+          <ProtectedRoute>
+            <OrgDashboardLayout>
+              <OrgCvAnalyzer />
+            </OrgDashboardLayout>
+          </ProtectedRoute>
+        } />
+
+        <Route path="/organization/dashboard/cv-analyser/history" element={
+          <ProtectedRoute>
+            <OrgDashboardLayout>
+              <OrgCvHistory />
             </OrgDashboardLayout>
           </ProtectedRoute>
         } />
